@@ -8,5 +8,7 @@
     <string name="header_update_tip_text">下拉可以刷新</string>
     <string name="header_update_time_text">刷新时间</string>
     <string name="header_update_image_desp"></string>
+    
+    <string name="footer_loading_text">正在加载...</string>
 
 </resources>

@@ -54,6 +54,16 @@ public class MainActivity extends Activity implements IRefreshListener {
     }
   }
 
+  private void setLoadingMoreData() {
+    for (int i = 0; i < 2; i++) {
+      ApkEntity entity = new ApkEntity();
+      entity.setName("更多名字");
+      entity.setDes("更多描述");
+      entity.setInfo("更多信息");
+      list.add(entity);
+    }
+  }
+
   @Override
   public void onRefresh() {
     Handler handler = new Handler();
@@ -64,6 +74,20 @@ public class MainActivity extends Activity implements IRefreshListener {
         setReFreshData();
         showListView(list);
         listView.updateCompleted();
+      }
+    }, 3 * 1000);
+  }
+
+  @Override
+  public void onLoadingMore() {
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+
+      @Override
+      public void run() {
+        setLoadingMoreData();
+        showListView(list);
+        listView.loadCompleted();
       }
     }, 3 * 1000);
   }

@@ -76,6 +76,26 @@ public class RefreshListView extends ListView implements OnScrollListener {
   private final int REFRESH = 3;
 
   /**
+   * 底部布局
+   */
+  private View footer = null;
+
+  /**
+   * 最后一个显示的Item
+   */
+  private int lastVisibleItem;
+
+  /**
+   * ListView中Item的个数
+   */
+  private int totalItemCount;
+
+  /**
+   * 是否正在加载更多数据
+   */
+  private boolean isLoading = false;
+
+  /**
    * 刷新数据接口
    * 
    * @author Ya-nan
@@ -85,6 +105,8 @@ public class RefreshListView extends ListView implements OnScrollListener {
 
   public interface IRefreshListener {
     public void onRefresh();
+
+    public void onLoadingMore();
   }
 
   public void setInterface(IRefreshListener iRefreshListener) {
@@ -115,10 +137,13 @@ public class RefreshListView extends ListView implements OnScrollListener {
   private void initView(Context mContext) {
     LayoutInflater mInflater = LayoutInflater.from(mContext);
     header = mInflater.inflate(R.layout.header_layout, null);
+    footer = mInflater.inflate(R.layout.footer_layout, null);
+    footer.findViewById(R.id.foooter_layout).setVisibility(GONE);
     measureView(header);
     headerHeight = header.getMeasuredHeight();
     topPadding(-headerHeight);
     this.addHeaderView(header);
+    this.addFooterView(footer);
     this.setOnScrollListener(this);
   }
 
@@ -157,13 +182,24 @@ public class RefreshListView extends ListView implements OnScrollListener {
   }
 
   @Override
-  public void onScroll(AbsListView arg0, int firstVisibleItem, int arg2, int arg3) {
+  public void onScroll(AbsListView arg0, int firstVisibleItem, int visibleItemCount,
+      int totalItemCount) {
     this.firstVisibleItem = firstVisibleItem;
+    this.lastVisibleItem = firstVisibleItem + visibleItemCount;
+    this.totalItemCount = totalItemCount;
   }
 
   @Override
   public void onScrollStateChanged(AbsListView arg0, int scrollState) {
     this.scrollState = scrollState;
+    if (lastVisibleItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+      // TODO:加载数据
+      if (!isLoading) {
+        isLoading = true;
+        footer.findViewById(R.id.foooter_layout).setVisibility(VISIBLE);
+        iRefreshListener.onLoadingMore();
+      }
+    }
   }
 
   @Override
@@ -299,6 +335,11 @@ public class RefreshListView extends ListView implements OnScrollListener {
     Date date = new Date(System.currentTimeMillis());
     String updateTime = format.format(date);
     time.setText(updateTime);
+  }
+
+  public void loadCompleted() {
+    isLoading = false;
+    footer.findViewById(R.id.foooter_layout).setVisibility(GONE);
   }
 
 }
