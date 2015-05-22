@@ -1,10 +1,6 @@
 # RefreshListView 
 Android下拉刷新上拉加载ListView
 
-标签（空格分隔）： ListView拓展
-
----
-
 使用示例：
 
   1.直接将此工程作为library工程导入你的项目或者直接将RefreshListView.java、footer_layout.xml、header_layout.xml拷贝到你的项目代码中。
